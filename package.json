@@ -1,0 +1,26 @@
+{
+  "name": "mofron-comp-ordertext",
+  "version": "0.0.1",
+  "description": "order view text component",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simpart/mofron-comp-ordertext.git"
+  },
+  "dependencies": {
+    "mofron-comp-text" : "",
+    "mofron-effect-orderview" : ""
+  },
+  "keywords": [
+    "front-end"
+  ],
+  "author": "simparts",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/simpart/mofron-comp-ordertext/issues"
+  },
+  "homepage": "https://github.com/simpart/mofron-comp-ordertext#readme"
+}
