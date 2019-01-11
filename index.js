@@ -41,7 +41,7 @@ mf.comp.OrderText = class extends Text {
         }
     }
     
-    text (prm) {
+    text (prm, idx) {
         try {
             if (undefined === prm) {
                 /* getter */
@@ -56,9 +56,58 @@ mf.comp.OrderText = class extends Text {
             if ('string' !== typeof prm) {
                 throw new Error('invalid parameter');
             }
+            let add_txt = null;
+            let ctl_txt = null;
             for (let pidx in prm) {
-                this.child([new Text({ text: prm[pidx], visible: false })]);
+                
+                if (true === ctl_txt) {
+                    if (';' === prm[pidx]) {
+                        ctl_txt = false;
+                    }
+                    continue;
+                }
+                
+                if ('&' === prm[pidx]) {
+                    /* check control text */
+                    ctl_txt = this.getCtrlText(prm.substring(pidx));
+                    if (null !== ctl_txt) {
+                        /* add control text */
+                        add_txt = new Text({
+                            text: ctl_txt,
+                            color: (null !== this.mainColor()) ? this.mainColor() : undefined
+                        });
+                        ctl_txt = true;
+                        this.addChild(add_txt, idx);
+                        continue;
+                    }
+                }
+                
+                add_txt = new Text({
+                    text: prm[pidx],
+                    color: (null !== this.mainColor()) ? this.mainColor() : undefined
+                });
+                add_txt.visible((true === this.visible()) ? undefined : false);
+                this.addChild(add_txt, idx);
             }
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    getCtrlText (prm) {
+        try {
+            if ('&' !== prm[0]) {
+                return null;
+            }
+            let ret = '';
+            for (let pidx in prm) {
+                ret += prm[pidx];
+                if (';' === prm[pidx]) {
+                    return ret;
+                }
+            }
+            return null;
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -67,6 +116,26 @@ mf.comp.OrderText = class extends Text {
     
     interval (prm) {
         try { return this.effect('OrderView').interval(prm); } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    mainColor (prm) {
+        try {
+            let ret = this.member(
+                'mainColor',
+                'string',
+                (undefined !== prm) ? mf.func.getColor(prm).toString() : prm
+            );
+            if (undefined !== prm) {
+                let chd = this.child();
+                for (let cidx in chd) {
+                    chd[cidx].mainColor(mf.func.getColor(prm).toString());
+                }
+            }
+            return ret;
+        } catch (e) {
             console.error(e.stack);
             throw e;
         }
