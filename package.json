@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-ordertext",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "order view text component",
   "main": "index.js",
   "scripts": {

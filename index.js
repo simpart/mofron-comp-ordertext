@@ -50,12 +50,14 @@ mf.comp.OrderText = class extends Text {
                 for (let cidx in chd) {
                     ret += (true === mf.func.isComp(chd[cidx], 'Text')) ? chd[cidx].text() : '';
                 }
-                return;
+                ret = ret.replace(/&ensp;/g, ' ');
+                return ret;
             }
             /* setter */
             if ('string' !== typeof prm) {
                 throw new Error('invalid parameter');
             }
+            prm = prm.replace(/ /g, '&ensp;');
             let add_txt = null;
             let ctl_txt = null;
             for (let pidx in prm) {
