@@ -1,24 +1,33 @@
 /**
- * @file   mofron-comp-ordertext/index.js
- * @brief  order view text component
- * @author simpart
+ * @file mofron-comp-ordertext/index.js
+ * @brief component module template for developper
+ * @license MIT
  */
-const mf = require('mofron');
-const Text = require('mofron-comp-text');
-const OrdViw = require('mofron-effect-orderview');
+const Text  = require("mofron-comp-text");
+const Fade  = require("mofron-effect-fade");
+const Slide = require("mofron-effect-slide");
 
-mf.comp.OrderText = class extends Text {
-    
+module.exports = class extends mofron.class.Component {
     /**
      * initialize component
      * 
-     * @param po paramter or option
+     * @param (mixed) string: text contents
+     *                key-value: component config
+     * @short 
+     * @type private
      */
-    constructor (po) {
+    constructor (p1) {
         try {
             super();
-            this.name('OrderText');
-            this.prmOpt(po);
+            this.modname("OrderText");
+            this.shortForm('text');
+
+            /* init config */
+	    this.confmng().add("text_buf", { init:'', type:"string" });
+            
+	    if (0 < arguments.length) {
+                this.config(p1);
+            }
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -28,120 +37,77 @@ mf.comp.OrderText = class extends Text {
     /**
      * initialize dom contents
      * 
-     * @npte private method
+     * @type private
      */
     initDomConts () {
         try {
-            super.initDomConts();
-            this.style({ 'display': 'flex' });
-            this.effect([new OrdViw(5)]);
+	    this.rootDom(new mofron.class.Dom("div", this));
+	    this.style({ 'display' : 'flex' });
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    text (prm, idx) {
+    /**
+     * text setter/getter
+     * 
+     * @param (mixed) string: text value
+     *                undefined: call as getter
+     * @return (string) text value
+     * @type parameter
+     */
+    text (val) {
         try {
-            if (undefined === prm) {
+	    if (undefined === val) {
                 /* getter */
-                let ret = '';
-                let chd = this.child();
-                for (let cidx in chd) {
-                    ret += (true === mf.func.isComp(chd[cidx], 'Text')) ? chd[cidx].text() : '';
-                }
-                ret = ret.replace(/&ensp;/g, ' ');
-                return ret;
-            }
-            /* setter */
-            if ('string' !== typeof prm) {
-                throw new Error('invalid parameter');
-            }
-            prm = prm.replace(/ /g, '&ensp;');
-            let add_txt = null;
-            let ctl_txt = null;
-            for (let pidx in prm) {
-                
-                if (true === ctl_txt) {
-                    if (';' === prm[pidx]) {
-                        ctl_txt = false;
-                    }
-                    continue;
-                }
-                
-                if ('&' === prm[pidx]) {
-                    /* check control text */
-                    ctl_txt = this.getCtrlText(prm.substring(pidx));
-                    if (null !== ctl_txt) {
-                        /* add control text */
-                        add_txt = new Text({
-                            text: ctl_txt,
-                            color: (null !== this.mainColor()) ? this.mainColor() : undefined
-                        });
-                        ctl_txt = true;
-                        this.addChild(add_txt, idx);
-                        continue;
-                    }
-                }
-                
-                add_txt = new Text({
-                    text: prm[pidx],
-                    color: (null !== this.mainColor()) ? this.mainColor() : undefined
+		return this.confmng("text_buf");
+	    }
+	    /* setter */
+	    if ('string' !== typeof val) {
+                throw new Error("invalid parameter");
+	    }
+	    this.confmng("text_buf",val);
+            
+	    let txtcmp;
+            for (let tidx=0; tidx < val.length; tidx++) {
+	        txtcmp = new Text({
+                    text: val[tidx],
+		    effect: [
+                        new Fade({ value: true, speed: 300, delay: 50*tidx }),
+                        new Slide({ direction: 'left', value: "0.1rem", delay: 50*tidx })
+                    ]
                 });
-                add_txt.visible((true === this.visible()) ? undefined : false);
-                this.addChild(add_txt, idx);
-            }
+                this.child(txtcmp);
+	    }
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    getCtrlText (prm) {
+    size (val, opt) {
         try {
-            if ('&' !== prm[0]) {
-                return null;
-            }
-            let ret = '';
-            for (let pidx in prm) {
-                ret += prm[pidx];
-                if (';' === prm[pidx]) {
-                    return ret;
-                }
-            }
-            return null;
+	    let chd = this.child();
+	    for (let cidx in chd) {
+                chd[cidx].size(val,opt);
+	    }
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
-    
-    interval (prm) {
-        try { return this.effect('OrderView').interval(prm); } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
-    
-    mainColor (prm) {
+
+    font (prm) {
         try {
-            let ret = this.member(
-                'mainColor',
-                'string',
-                (undefined !== prm) ? mf.func.getColor(prm).toString() : prm
-            );
-            if (undefined !== prm) {
-                let chd = this.child();
-                for (let cidx in chd) {
-                    chd[cidx].mainColor(mf.func.getColor(prm).toString());
-                }
+            let chd = this.child();
+            for (let cidx in chd) {
+                chd[cidx].font(prm);
             }
-            return ret;
-        } catch (e) {
+	} catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
 }
-module.exports = mf.comp.OrderText;
 /* end of file */

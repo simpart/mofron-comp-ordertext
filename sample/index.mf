@@ -1,0 +1,5 @@
+<setting>
+    <tag load="mofron-comp-ordertext">OrderText</tag>
+</setting>
+
+<OrderText size='0.6rem' font="'M PLUS Rounded 1c'">OrderText-test</OrderText>
