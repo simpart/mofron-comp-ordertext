@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-ordertext",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "order view text component",
   "main": "index.js",
   "scripts": {
@@ -12,10 +12,11 @@
   },
   "dependencies": {
     "mofron-comp-text" : "",
-    "mofron-effect-orderview" : ""
+    "mofron-effect-fade" : "",
+    "mofron-effect-slide" : ""
   },
   "keywords": [
-    "front-end"
+    "front-end","mofron"
   ],
   "author": "simparts",
   "license": "MIT",
