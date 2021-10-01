@@ -13,7 +13,7 @@ module.exports = class extends mofron.class.Component {
      * 
      * @param (mixed) string: text contents
      *                key-value: component config
-     * @short 
+     * @short text
      * @type private
      */
     constructor (p1) {
@@ -24,7 +24,9 @@ module.exports = class extends mofron.class.Component {
 
             /* init config */
 	    this.confmng().add("text_buf", { init:'', type:"string" });
-            
+	    this.confmng().add("delay", { init:50, type: "number" });
+            this.confmng().add("delayOffset", { init:0, type: "number" });
+
 	    if (0 < arguments.length) {
                 this.config(p1);
             }
@@ -71,11 +73,12 @@ module.exports = class extends mofron.class.Component {
             
 	    let txtcmp;
             for (let tidx=0; tidx < val.length; tidx++) {
+	        let delay_tm = this.delayOffset() + this.delay() * tidx;
 	        txtcmp = new Text({
                     text: val[tidx],
 		    effect: [
-                        new Fade({ value: true, speed: 300, delay: 50*tidx }),
-                        new Slide({ direction: 'left', value: "0.1rem", delay: 50*tidx })
+                        new Fade({ value: true, speed: 300, delay: delay_tm }),
+                        new Slide({ direction: 'left', value: "0.1rem", delay: delay_tm })
                     ]
                 });
                 this.child(txtcmp);
@@ -86,6 +89,42 @@ module.exports = class extends mofron.class.Component {
         }
     }
     
+    /**
+     * timing for order effect
+     * 
+     * @param (number) effect timing
+     * @type parameter
+     */
+    delay (prm) {
+        try {
+            return this.confmng("delay",prm);
+	} catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    /**
+     * delay for order effect
+     * 
+     * @param (number) effect delay
+     * @type parameter
+     */
+    delayOffset (prm) {
+        try {
+            return this.confmng("delayOffset",prm);
+	} catch (e) {
+            console.error(e.stack);
+            throw e;
+	}
+    }
+    
+    /**
+     * text size
+     * 
+     * @param (size) text size
+     * @
+     */
     size (val, opt) {
         try {
 	    let chd = this.child();
