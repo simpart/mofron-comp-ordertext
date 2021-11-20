@@ -140,6 +140,9 @@ module.exports = class extends mofron.class.Component {
     font (prm) {
         try {
             let chd = this.child();
+	    if (undefined === prm) {
+                return (0 === chd.length) ? undefined : chd[0].font();
+            }
             for (let cidx in chd) {
                 chd[cidx].font(prm);
             }
